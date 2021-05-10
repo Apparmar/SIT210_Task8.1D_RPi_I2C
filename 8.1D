@@ -1,0 +1,47 @@
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BCM)
+
+trig = 3
+echo = 2
+
+GPIO.setup(trig,GPIO.OUT)
+GPIO.setup(echo,GPIO.IN)
+
+
+def distanceMeas():
+    GPIO.output(trig,1)
+    time.sleep(0.00001)
+    GPIO.output(trig,0)
+        
+    while GPIO.input(echo) == 0:
+        pass
+    start = time.time()
+    
+    while GPIO.input(echo) == 1:
+        pass
+    end = time.time()
+    
+    distance = (end - start) * 17000
+    return distance
+
+try:
+    while True:
+        dist = distanceMeas()
+        print(dist)
+        
+        if dist > 0 and dist <= 5 :
+             print("Too close")
+        elif dist > 5 and dist <= 10 :
+             print("Within Range")
+        elif dist > 10 and dist <= 15 :
+             print("Little Far")
+        elif dist > 15 and dist < 25 :
+             print("Too Far")
+        else :
+            print("Out of range") 
+        time.sleep(1 )          
+except KeyboardInterrupt:
+    print("End")
+    
+    
