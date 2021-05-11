@@ -55,3 +55,42 @@ except KeyboardInterrupt:
 GPIO.cleanup()
 
  
+ 
+ 
+ // Arduino code
+ 
+ #include <Wire.h>
+
+const int ledPin = 13;
+const int ledPin2 = 12;
+
+void setup(){
+
+  Wire.begin(0x8);
+
+  Wire.onReceive(receiveEvent);
+
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);  
+
+  pinMode(ledPin2, OUTPUT);
+  digitalWrite(ledPin2, LOW);  
+}
+
+void receiveEvent() {
+  while (Wire.available()) {
+
+    char c = Wire.read();
+
+    if (c == 1)
+      {digitalWrite(ledPin,c);
+       digitalWrite(ledPin2,LOW);}
+    else
+      {digitalWrite(ledPin,0);
+      digitalWrite(ledPin2,1);}      
+    }  
+    
+}
+void loop(){
+  delay(100);
+}
