@@ -1,12 +1,25 @@
+from smbus import SMBus
 import RPi.GPIO as GPIO
 import time
-GPIO.setmode(GPIO.BCM)
 
-trig = 3
-echo = 2
+GPIO.setmode(GPIO.BOARD)
+
+trig = 7
+echo = 12
 
 GPIO.setup(trig,GPIO.OUT)
 GPIO.setup(echo,GPIO.IN)
+
+GPIO.output(trig, 0)
+
+addr = 0x8
+bus = SMBus(1)
+
+numb = 1
+
+
+time.sleep(0.1)
+print ("Starting measurement...")
 
 
 def distanceMeas():
@@ -30,18 +43,15 @@ try:
         dist = distanceMeas()
         print(dist)
         
-        if dist > 0 and dist <= 5 :
-             print("Too close")
-        elif dist > 5 and dist <= 10 :
-             print("Within Range")
-        elif dist > 10 and dist <= 15 :
-             print("Little Far")
-        elif dist > 15 and dist < 25 :
-             print("Too Far")
+        if dist > 20 :
+            bus.write_byte(addr, 0x1)            
         else :
-            print("Out of range") 
-        time.sleep(1 )          
+            bus.write_byte(addr, 0x0)
+        time.sleep(0.05)          
 except KeyboardInterrupt:
     print("End")
-    
-    
+
+ 
+GPIO.cleanup()
+
+ 
